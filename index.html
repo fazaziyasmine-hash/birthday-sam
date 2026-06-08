@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission Sam 🖤</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Raleway:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0d0000; font-family:'Raleway',sans-serif; min-height:100vh; color:#fff; }
+
+.page { display:none; }
+.page.active { display:block; animation:pageIn 0.7s ease; }
+@keyframes pageIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+.particles { position:fixed; top:0;left:0;right:0;bottom:0; pointer-events:none; z-index:0; overflow:hidden; }
+.p { position:absolute; border-radius:50%; animation:pFloat linear infinite; }
+@keyframes pFloat { 0%{opacity:0;transform:translateY(100vh) scale(0)} 10%{opacity:0.5} 90%{opacity:0.1} 100%{opacity:0;transform:translateY(-50px) scale(1)} }
+
+/* ===== INTRO ===== */
+.intro-wrap {
+  position:relative; z-index:1; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:40px 24px; text-align:center;
+  background:linear-gradient(160deg,#1a0000 0%,#0d0000 60%,#1a0005 100%);
+}
+.flame { font-size:52px; animation:float 3s ease-in-out infinite; margin-bottom:20px; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.secret-stamp { display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(192,57,43,0.4); padding:5px 16px; margin-bottom:28px; font-family:'Cinzel',serif; font-size:8px; letter-spacing:5px; color:rgba(192,57,43,0.7); text-transform:uppercase; }
+.intro-title { font-family:'Cinzel',serif; font-size:46px; font-weight:900; color:#fff; line-height:1; margin-bottom:6px; text-shadow:0 0 40px rgba(192,57,43,0.4); }
+.intro-title span { color:#c0392b; display:block; font-size:56px; }
+.intro-date { font-size:10px; letter-spacing:4px; color:rgba(255,255,255,0.25); margin-bottom:20px; text-transform:uppercase; }
+.intro-msg { font-family:'Cormorant Garamond',serif; font-size:18px; font-style:italic; color:rgba(255,255,255,0.65); line-height:1.9; max-width:340px; margin-bottom:20px; }
+.intro-msg em { color:#c0392b; font-style:normal; }
+
+/* Warning box */
+.warning-box { background:rgba(192,57,43,0.1); border:1px solid rgba(192,57,43,0.3); border-radius:8px; padding:16px 20px; max-width:340px; margin-bottom:28px; }
+.warning-box p { font-family:'Cormorant Garamond',serif; font-size:16px; font-style:italic; color:rgba(255,255,255,0.8); line-height:1.7; }
+.warning-box p em { color:#c0392b; font-style:normal; }
+
+.gifts-preview { display:flex; gap:8px; margin-bottom:28px; flex-wrap:wrap; justify-content:center; }
+.gift-dot { width:36px; height:36px; border:1px solid rgba(192,57,43,0.3); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; background:rgba(192,57,43,0.05); }
+.gift-dot.mystery { font-size:18px; border-color:rgba(180,130,0,0.4); background:rgba(180,130,0,0.05); animation:pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 rgba(180,130,0,0)} 50%{box-shadow:0 0 12px rgba(180,130,0,0.3)} }
+
+.start-btn { background:linear-gradient(135deg,#6b0000,#c0392b); color:#fff; font-family:'Cinzel',serif; font-size:11px; font-weight:700; letter-spacing:4px; text-transform:uppercase; padding:16px 36px; border:none; cursor:pointer; transition:all 0.3s; }
+.start-btn:hover { box-shadow:0 0 30px rgba(192,57,43,0.5); transform:translateY(-2px); }
+
+/* ===== LEVELS ===== */
+.levels-wrap { position:relative; z-index:1; min-height:100vh; background:linear-gradient(160deg,#1a0000,#0d0000); padding:36px 20px; max-width:480px; margin:0 auto; }
+.mission-hdr { text-align:center; margin-bottom:28px; }
+.mission-code { font-family:'Cinzel',serif; font-size:8px; letter-spacing:4px; color:rgba(192,57,43,0.5); margin-bottom:8px; }
+.mission-name { font-family:'Cinzel',serif; font-size:24px; font-weight:700; color:#fff; }
+.prog-bar { background:rgba(255,255,255,0.05); height:2px; margin:14px 0 0; border-radius:2px; }
+.prog-fill { height:100%; background:linear-gradient(90deg,#6b0000,#c0392b); border-radius:2px; transition:width 0.6s; }
+
+.lv-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:18px; margin-bottom:12px; cursor:pointer; transition:all 0.3s; position:relative; overflow:hidden; }
+.lv-card::before { content:''; position:absolute; left:0;top:0;bottom:0; width:3px; background:linear-gradient(180deg,#6b0000,#c0392b); transform:scaleY(0); transition:transform 0.3s; }
+.lv-card:hover::before { transform:scaleY(1); }
+.lv-card:hover { background:rgba(192,57,43,0.07); border-color:rgba(192,57,43,0.2); transform:translateX(3px); }
+.lv-card.done-card { border-color:rgba(180,130,0,0.3); background:rgba(180,130,0,0.04); }
+.lv-card.done-card::before { background:linear-gradient(180deg,#6b4800,#b48200); transform:scaleY(1); }
+.lv-top { display:flex; align-items:center; gap:14px; margin-bottom:8px; }
+.lv-num { width:38px; height:38px; border:1.5px solid rgba(192,57,43,0.35); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cinzel',serif; font-size:12px; font-weight:700; color:#c0392b; flex-shrink:0; }
+.done-card .lv-num { border-color:#b48200; color:#b48200; }
+.lv-info { flex:1; }
+.lv-lbl { font-size:8px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.25); margin-bottom:3px; }
+.lv-name { font-family:'Cinzel',serif; font-size:14px; font-weight:700; color:#fff; }
+.done-card .lv-name { color:#d4a000; }
+.lv-ico { font-size:20px; }
+.lv-desc { font-family:'Cormorant Garamond',serif; font-size:14px; font-style:italic; color:rgba(255,255,255,0.4); padding-left:52px; line-height:1.4; }
+.done-card .lv-desc { color:rgba(180,130,0,0.6); }
+.lv-status { position:absolute; top:16px; right:16px; font-size:8px; font-weight:700; letter-spacing:2px; text-transform:uppercase; }
+.lv-status.open { color:#c0392b; }
+.lv-status.done { color:#b48200; }
+.final-lv { background:rgba(180,130,0,0.05); border-color:rgba(180,130,0,0.25); }
+
+/* ===== DETAIL ===== */
+.detail-wrap { position:relative; z-index:1; min-height:100vh; background:linear-gradient(160deg,#1a0000,#0d0000); padding:28px 20px; max-width:480px; margin:0 auto; }
+.back-btn { background:none; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.3); font-size:9px; letter-spacing:3px; text-transform:uppercase; padding:8px 14px; cursor:pointer; margin-bottom:24px; font-family:'Raleway',sans-serif; transition:all 0.3s; }
+.back-btn:hover { border-color:#c0392b; color:#c0392b; }
+.d-header { text-align:center; margin-bottom:28px; }
+.d-badge { display:inline-block; background:rgba(192,57,43,0.1); border:1px solid rgba(192,57,43,0.25); color:#c0392b; font-family:'Cinzel',serif; font-size:8px; letter-spacing:3px; padding:5px 14px; margin-bottom:12px; text-transform:uppercase; }
+.d-emoji { font-size:36px; display:block; margin-bottom:8px; }
+.d-title { font-family:'Cinzel',serif; font-size:26px; font-weight:700; color:#fff; }
+
+.c-block { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:20px; margin-bottom:12px; }
+.c-block.rl { border-left:3px solid #c0392b; }
+.c-block.gl { border-left:3px solid #b48200; }
+.c-lbl { font-size:8px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#c0392b; margin-bottom:10px; }
+.c-lbl.g { color:#b48200; }
+.c-txt { font-family:'Cormorant Garamond',serif; font-size:17px; color:rgba(255,255,255,0.85); line-height:1.8; }
+.c-txt em { color:#c0392b; font-style:italic; }
+
+.clue-wrap { background:rgba(192,57,43,0.05); border:1px dashed rgba(192,57,43,0.25); border-radius:6px; padding:14px; margin-top:12px; }
+.clue-wrap p { font-family:'Cormorant Garamond',serif; font-size:15px; font-style:italic; color:rgba(255,255,255,0.6); line-height:1.7; }
+.clue-addr { margin-top:10px; font-family:'Raleway',sans-serif; font-size:11px; font-weight:600; color:#c0392b; background:rgba(192,57,43,0.08); padding:8px 12px; border-left:2px solid #c0392b; }
+
+.complete-btn { display:block; width:100%; background:linear-gradient(135deg,#4a3000,#b48200); color:#fff; font-family:'Cinzel',serif; font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; padding:15px; border:none; cursor:pointer; margin-top:14px; transition:all 0.3s; }
+.complete-btn:hover { box-shadow:0 6px 20px rgba(180,130,0,0.3); transform:translateY(-2px); }
+
+.gift-list { display:flex; flex-direction:column; gap:10px; }
+.gift-item { display:flex; align-items:flex-start; gap:12px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:6px; padding:14px 16px; }
+.gift-n { width:28px; height:28px; flex-shrink:0; background:rgba(192,57,43,0.1); border:1px solid rgba(192,57,43,0.25); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Cinzel',serif; font-size:10px; color:#c0392b; }
+.gift-n.locked { background:rgba(180,130,0,0.1); border-color:rgba(180,130,0,0.3); color:#b48200; animation:pulse 2s ease-in-out infinite; }
+.gift-txt { flex:1; }
+.gift-title { font-family:'Cinzel',serif; font-size:12px; color:#fff; margin-bottom:2px; }
+.gift-desc { font-family:'Cormorant Garamond',serif; font-size:13px; font-style:italic; color:rgba(255,255,255,0.4); line-height:1.4; }
+.gift-desc.mystery-desc { color:rgba(180,130,0,0.6); }
+.gift-ico { font-size:18px; }
+
+.mystery-box { background:linear-gradient(135deg,rgba(180,130,0,0.08),rgba(139,26,26,0.08)); border:1px solid rgba(180,130,0,0.2); border-radius:6px; padding:20px; text-align:center; margin-top:12px; animation:pulse 2s ease-in-out infinite; }
+.mystery-box p { font-family:'Cormorant Garamond',serif; font-size:16px; font-style:italic; color:rgba(255,255,255,0.6); line-height:1.7; }
+.mystery-box em { color:#b48200; font-style:normal; }
+
+/* Color game */
+.color-opts { display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+.c-opt { display:flex; align-items:center; gap:14px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:16px; cursor:pointer; transition:all 0.3s; }
+.c-opt:hover { background:rgba(192,57,43,0.08); border-color:rgba(192,57,43,0.25); }
+.c-opt.selected { background:rgba(192,57,43,0.1); border-color:#c0392b; }
+.c-swatch { width:36px; height:36px; border-radius:50%; border:2px solid rgba(255,255,255,0.1); flex-shrink:0; }
+.c-info { flex:1; }
+.c-name { font-family:'Cinzel',serif; font-size:15px; color:#fff; margin-bottom:3px; }
+.c-secret { font-family:'Cormorant Garamond',serif; font-size:14px; font-style:italic; color:rgba(255,255,255,0.3); display:none; line-height:1.4; }
+.c-opt.selected .c-secret { display:block; color:#c0392b; }
+.c-arr { color:rgba(255,255,255,0.15); font-size:18px; transition:all 0.3s; }
+.c-opt.selected .c-arr { color:#c0392b; transform:rotate(90deg); }
+
+.reaction { background:linear-gradient(135deg,rgba(139,0,0,0.15),rgba(80,0,0,0.08)); border:1px solid rgba(192,57,43,0.25); border-radius:6px; padding:20px; text-align:center; margin:14px 0; display:none; animation:fadeIn 0.4s ease; }
+.reaction.show { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.r-e { font-size:32px; margin-bottom:8px; }
+.r-t { font-family:'Cormorant Garamond',serif; font-size:19px; font-style:italic; color:#fdeee8; line-height:1.6; }
+
+.sms-btn { display:block; width:100%; background:linear-gradient(135deg,#6b0000,#c0392b); color:#fff; font-family:'Cinzel',serif; font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; padding:16px; border:none; cursor:pointer; text-decoration:none; text-align:center; margin-top:12px; transition:all 0.3s; box-shadow:0 4px 16px rgba(192,57,43,0.2); }
+.sms-btn:hover { box-shadow:0 8px 24px rgba(192,57,43,0.4); transform:translateY(-2px); }
+
+/* Final */
+.final-wrap { position:relative; z-index:1; min-height:100vh; background:linear-gradient(160deg,#1a0000,#0d0000); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 24px; text-align:center; }
+.trophy { font-size:64px; animation:float 3s ease-in-out infinite; margin-bottom:20px; }
+.f-title { font-family:'Cinzel',serif; font-size:30px; font-weight:900; color:#b48200; text-shadow:0 0 20px rgba(180,130,0,0.4); margin-bottom:10px; }
+.f-sub { font-family:'Cormorant Garamond',serif; font-size:20px; font-style:italic; color:rgba(255,255,255,0.55); margin-bottom:28px; line-height:1.6; }
+.f-msg { background:rgba(255,255,255,0.03); border:1px solid rgba(192,57,43,0.15); padding:24px; max-width:360px; margin-bottom:24px; }
+.f-msg p { font-family:'Cormorant Garamond',serif; font-size:18px; font-style:italic; color:rgba(255,255,255,0.7); line-height:1.9; }
+.f-msg p em { color:#c0392b; }
+.f-hearts { font-size:14px; letter-spacing:6px; color:rgba(192,57,43,0.4); }
+</style>
+</head>
+<body>
+
+<div class="particles">
+  <div class="p" style="left:10%;width:3px;height:3px;background:#c0392b;animation-duration:8s;animation-delay:0s"></div>
+  <div class="p" style="left:30%;width:2px;height:2px;background:#8b1a1a;animation-duration:6s;animation-delay:1s"></div>
+  <div class="p" style="left:60%;width:3px;height:3px;background:#c0392b;animation-duration:9s;animation-delay:2s"></div>
+  <div class="p" style="left:80%;width:2px;height:2px;background:#6b0000;animation-duration:7s;animation-delay:0.5s"></div>
+</div>
+
+<!-- INTRO -->
+<div class="page active" id="page-intro">
+<div class="intro-wrap">
+  <div class="flame">🖤</div>
+  <div class="secret-stamp">✦ Confidentiel · Pour toi seul ✦</div>
+  <h1 class="intro-title">Happy Birthday<span>Sam</span></h1>
+  <p class="intro-date">18 Juin 2026 · 29 ans · Mission Spéciale</p>
+  <p class="intro-msg">
+    Aujourd'hui tu auras <em>5 cadeaux...</em><br>
+    Tu les découvres <em>petit à petit.</em><br>
+    Le dernier... <em>tu ne peux pas le deviner.</em> 🔒
+  </p>
+  <div class="warning-box">
+    <p>
+      ⚠️ <em>Attention !</em> Cette carte est pour le <em>20 juin.</em><br><br>
+      Ce jour-là je pars à <em>14h</em> de la maison pour tracer le chemin de ton aventure...<br>
+      On va jouer à <em>cache-cache</em> 😏<br>
+      Tu devras me retrouver... <em>si tu le peux !</em> 🔥
+    </p>
+  </div>
+  <div class="gifts-preview">
+    <div class="gift-dot">🍽️</div>
+    <div class="gift-dot">🏨</div>
+    <div class="gift-dot">🎂</div>
+    <div class="gift-dot">💋</div>
+    <div class="gift-dot mystery">🔒</div>
+  </div>
+  <button class="start-btn" onclick="showPage('page-levels')">Accepter la mission →</button>
+</div>
+</div>
+
+<!-- NIVEAUX -->
+<div class="page" id="page-levels">
+<div class="levels-wrap">
+  <div class="mission-hdr">
+    <p class="mission-code">Opération Sam · 20 Juin 2026</p>
+    <h2 class="mission-name">Choisis ton niveau</h2>
+    <div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+  </div>
+
+  <div class="lv-card" onclick="showPage('page-1')">
+    <div class="lv-top"><div class="lv-num">01</div><div class="lv-info"><div class="lv-lbl">Niveau 1</div><div class="lv-name">Le Dress Code</div></div><div class="lv-ico">🕴️</div></div>
+    <p class="lv-desc">Sois le plus beau gosse du monde.</p>
+    <span class="lv-status open" id="s1">› Ouvrir</span>
+  </div>
+
+  <div class="lv-card" onclick="showPage('page-2')">
+    <div class="lv-top"><div class="lv-num">02</div><div class="lv-info"><div class="lv-lbl">Niveau 2</div><div class="lv-name">Le Rendez-vous</div></div><div class="lv-ico">📍</div></div>
+    <p class="lv-desc">L'heure et l'indice pour me retrouver.</p>
+    <span class="lv-status open" id="s2">› Ouvrir</span>
+  </div>
+
+  <div class="lv-card" onclick="showPage('page-3')">
+    <div class="lv-top"><div class="lv-num">03</div><div class="lv-info"><div class="lv-lbl">Niveau 3</div><div class="lv-name">L'Indice Secret</div></div><div class="lv-ico">🗺️</div></div>
+    <p class="lv-desc">Rappelle-toi... et retrouve-moi.</p>
+    <span class="lv-status open" id="s3">› Ouvrir</span>
+  </div>
+
+  <div class="lv-card" onclick="showPage('page-4')">
+    <div class="lv-top"><div class="lv-num">04</div><div class="lv-info"><div class="lv-lbl">Niveau 4</div><div class="lv-name">La Mission Secrète</div></div><div class="lv-ico">🚬</div></div>
+    <p class="lv-desc">Des instructions spéciales t'attendent.</p>
+    <span class="lv-status open" id="s4">› Ouvrir</span>
+  </div>
+
+  <div class="lv-card" onclick="showPage('page-5')">
+    <div class="lv-top"><div class="lv-num">05</div><div class="lv-info"><div class="lv-lbl">Niveau 5 · 🔥</div><div class="lv-name">La Question Interdite</div></div><div class="lv-ico">😈</div></div>
+    <p class="lv-desc">Une question que seul toi peux répondre...</p>
+    <span class="lv-status open" id="s5">› Ouvrir</span>
+  </div>
+
+  <div class="lv-card final-lv" onclick="showPage('page-final')">
+    <div class="lv-top"><div class="lv-num" style="border-color:#b48200;color:#b48200;">🏆</div><div class="lv-info"><div class="lv-lbl" style="color:rgba(180,130,0,0.5)">Niveau Final</div><div class="lv-name" style="color:#d4a000;">La Récompense</div></div><div class="lv-ico">💋</div></div>
+    <p class="lv-desc" style="color:rgba(180,130,0,0.5);">Ce soir t'appartient... et moi aussi.</p>
+    <span class="lv-status done">› Débloquer</span>
+  </div>
+</div>
+</div>
+
+<!-- NIVEAU 1 — DRESS CODE -->
+<div class="page" id="page-1">
+<div class="detail-wrap">
+  <button class="back-btn" onclick="showPage('page-levels')">← Retour</button>
+  <div class="d-header"><div class="d-badge">Niveau 01 · Dress Code</div><span class="d-emoji">🕴️</span><h2 class="d-title">Sois Irrésistible</h2></div>
+  <div class="c-block rl">
+    <div class="c-lbl">Tes instructions pour le 20 juin</div>
+    <p class="c-txt">
+      Après le petit déjeuner, sors vers <em>13h30</em>...<br><br>
+      💈 Va te coiffer, sois beau.<br>
+      🚬 Achète deux cigares, des cigarettes...<br>
+      😈 Et tout ce qui peut rendre notre nuit encore plus <em>folle et mémorable</em>... tu vois ce que je veux dire. 🔥<br><br>
+      Puis rentre, prends une <em>belle douche</em> 🚿<br>
+      Mets ton <em>parfum préféré</em> 🌹<br>
+      Prépare <em>le dragon</em> 🐉😏<br>
+      Et sois le <em>plus beau gosse du monde...</em><br><br>
+      Parce que ce soir je suis <em>toute à toi.</em> 💋🔥
+    </p>
+  </div>
+  <div class="c-block">
+    <div class="c-lbl">Ce que tu sais</div>
+    <p class="c-txt">
+      Moi je pars vers <em>14h</em> préparer l'aventure et faire des courses...<br><br>
+      On ne se verra plus jusqu'à <em>l'heure du rendez-vous.</em> 😏<br><br>
+      Tu connaîtras l'endroit grâce à <em>un seul indice...</em><br>
+      Si tu as une <em>bonne mémoire.</em> 🧠❤️
+    </p>
+  </div>
+  <button class="complete-btn" onclick="done(1)">Niveau complété ✓</button>
+</div>
+</div>
+
+<!-- NIVEAU 2 — RENDEZ-VOUS -->
+<div class="page" id="page-2">
+<div class="detail-wrap">
+  <button class="back-btn" onclick="showPage('page-levels')">← Retour</button>
+  <div class="d-header"><div class="d-badge">Niveau 02 · Rendez-vous</div><span class="d-emoji">📍</span><h2 class="d-title">On se retrouve à...</h2></div>
+  <div class="c-block rl">
+    <div class="c-lbl">L'heure du rendez-vous</div>
+    <p class="c-txt" style="font-family:'Cinzel',serif;font-size:42px;color:#c0392b;font-weight:700;line-height:1.2;font-style:normal;">19h30</p>
+    <p class="c-txt" style="margin-top:12px;">Je suis déjà là-bas à t'attendre...<br>Tu n'as qu'à <em>me retrouver. 😏</em></p>
+  </div>
+  <div class="c-block">
+    <div class="c-lbl">Après le rendez-vous</div>
+    <p class="c-txt">On part <em>ensemble</em> dîner dans un endroit que tu connais pas encore... 🍽️<br><br>Et après le dîner... <em>l'aventure continue. 🔒</em></p>
+  </div>
+  <button class="complete-btn" onclick="done(2)">Niveau complété ✓</button>
+</div>
+</div>
+
+<!-- NIVEAU 3 — INDICE -->
+<div class="page" id="page-3">
+<div class="detail-wrap">
+  <button class="back-btn" onclick="showPage('page-levels')">← Retour</button>
+  <div class="d-header"><div class="d-badge">Niveau 03 · Cache-cache</div><span class="d-emoji">🗺️</span><h2 class="d-title">Retrouve-moi</h2></div>
+  <div class="c-block rl">
+    <div class="c-lbl">Ton indice</div>
+    <p class="c-txt" style="font-size:19px;line-height:1.9;">
+      <em>"Rappelle-toi du premier moment où on a mis les pieds à Versailles ensemble...</em><br><br>
+      Retrouve-moi là-bas. 💙"
+    </p>
+    <div class="clue-wrap">
+      <p>Si tu hésites... envoie un SMS à ta chérie. Elle te répondra <strong style="color:#c0392b;">OUI</strong> ou <strong style="color:#c0392b;">NON</strong>. Elle est occupée à préparer <em>ton aventure</em> 😏</p>
+    </div>
+  </div>
+  <button class="complete-btn" onclick="done(3)">Niveau complété ✓</button>
+</div>
+</div>
+
+<!-- NIVEAU 4 — MISSION SECRÈTE -->
+<div class="page" id="page-4">
+<div class="detail-wrap">
+  <button class="back-btn" onclick="showPage('page-levels')">← Retour</button>
+  <div class="d-header"><div class="d-badge">Niveau 04 · Mission Secrète</div><span class="d-emoji">🚬</span><h2 class="d-title">Tes Instructions</h2></div>
+  <div class="c-block rl">
+    <div class="c-lbl">Avant de venir...</div>
+    <p class="c-txt">🚬 Achète <em>deux cigares.</em><br>On ne fume pas d'habitude... mais ce soir est <em>exceptionnel.</em><br><br>Et si tu penses à autre chose pour rendre la soirée encore plus <em>folle</em>... pourquoi pas ? 😈<br><br>Ce soir on célèbre comme des rois. 👑</p>
+  </div>
+  <div class="c-block gl">
+    <div class="c-lbl g">Tes 5 cadeaux ce soir</div>
+    <div class="gift-list">
+      <div class="gift-item"><div class="gift-n">1</div><div class="gift-txt"><div class="gift-title">Surprise №1 🎁</div><div class="gift-desc">Quelque chose qui va te mettre l'eau à la bouche... 🤤</div></div><div class="gift-ico">🎁</div></div>
+      <div class="gift-item"><div class="gift-n">2</div><div class="gift-txt"><div class="gift-title">La Nuit Interdite 🍓🔥</div><div class="gift-desc">Cette nuit on ne dort pas... 😈</div></div><div class="gift-ico">🍓🔥</div></div>
+      <div class="gift-item"><div class="gift-n">3</div><div class="gift-txt"><div class="gift-title">Surprise №3 ✨</div><div class="gift-desc">Du sucré... mais pas que. 😏</div></div><div class="gift-ico">✨</div></div>
+      <div class="gift-item"><div class="gift-n">4</div><div class="gift-txt"><div class="gift-title">Moi... 💋</div><div class="gift-desc">Ton cadeau le plus précieux ce soir. 😈</div></div><div class="gift-ico">💋</div></div>
+      <div class="gift-item"><div class="gift-n locked">5</div><div class="gift-txt"><div class="gift-title" style="color:#b48200;">??? 🔒</div><div class="gift-desc mystery-desc">Impossible à deviner...<br>Tu le découvres quand tu pousses la porte. 😈</div></div><div class="gift-ico">🔒</div></div>
+    </div>
+    <div class="mystery-box">
+      <p>Ce 5ème cadeau...<br><em>personne ne peut te le deviner.</em><br>Il t'attend dans la chambre. 🖤</p>
+    </div>
+  </div>
+  <button class="complete-btn" onclick="done(4)">Niveau complété ✓</button>
+</div>
+</div>
+
+<!-- NIVEAU 5 — QUESTION -->
+<div class="page" id="page-5">
+<div class="detail-wrap">
+  <button class="back-btn" onclick="showPage('page-levels')">← Retour</button>
+  <div class="d-header"><div class="d-badge">Niveau 05 · Top Secret 🔥</div><span class="d-emoji">😈</span><h2 class="d-title">La Question</h2></div>
+  <div class="c-block rl">
+    <div class="c-lbl">Avant que l'aventure commence...</div>
+    <p class="c-txt">J'ai une question <em>très importante</em> pour toi.<br><br>Réfléchis bien...<br><br><em style="font-size:19px;">"Quelle couleur mérite de se trouver... là où toi seul as le droit de regarder ?"</em> 👑🖤</p>
+  </div>
+  <div class="color-opts">
+    <div class="c-opt" onclick="pick(this,'Noir 🖤','Tu aimes le danger... cette nuit ne sera pas de tout repos. 🔥','Noir')">
+      <div class="c-swatch" style="background:#111;border-color:rgba(255,255,255,0.2)"></div>
+      <div class="c-info"><div class="c-name">Noir 🖤</div><div class="c-secret">Tu aimes le danger... cette nuit ne sera pas de tout repos. 🔥</div></div>
+      <div class="c-arr">›</div>
+    </div>
+    <div class="c-opt" onclick="pick(this,'Rouge ❤️','Passion et feu... tu sais exactement ce que tu veux. 😈','Rouge')">
+      <div class="c-swatch" style="background:#c0392b"></div>
+      <div class="c-info"><div class="c-name">Rouge ❤️</div><div class="c-secret">Passion et feu... tu sais exactement ce que tu veux. 😈</div></div>
+      <div class="c-arr">›</div>
+    </div>
+  </div>
+  <div class="reaction" id="react"><div class="r-e" id="rE"></div><div class="r-t" id="rT"></div></div>
+  <a class="sms-btn" id="smsBtn" href="#">💬 Envoyer ma réponse à ma chérie 😏</a>
+  <button class="complete-btn" onclick="done(5)" style="margin-top:10px;">Niveau complété ✓</button>
+</div>
+</div>
+
+<!-- FINAL -->
+<div class="page" id="page-final">
+<div class="final-wrap">
+  <div class="trophy">🏆</div>
+  <h2 class="f-title">Mission Accomplie !</h2>
+  <p class="f-sub">Tu as tout débloqué, Sam.<br>Maintenant... retrouve-moi. 😏</p>
+  <div class="f-msg">
+    <p>Ce soir appartient à <em>nous deux.</em><br><br>5 cadeaux. 5 moments.<br>Un cache-cache que tu n'oublieras jamais.<br><br>Une femme qui t'aime <em>plus que tout.</em><br><br>Joyeux anniversaire mon amour. ❤️</p>
+  </div>
+  <div class="f-hearts">♥ ♥ ♥</div>
+</div>
+</div>
+
+<script>
+const phone="0753770815";
+let chosen="...";
+let completed=new Set();
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function done(n){
+  completed.add(n);
+  const s=document.getElementById('s'+n);
+  if(s){s.textContent='✓ Complété';s.className='lv-status done';}
+  const cards=document.querySelectorAll('.lv-card');
+  if(cards[n-1])cards[n-1].classList.add('done-card');
+  document.getElementById('prog').style.width=(completed.size/5*80)+'%';
+  showPage('page-levels');
+}
+
+function pick(el,name,msg,short){
+  document.querySelectorAll('.c-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  chosen=name;
+  const emojis={Noir:'🖤🔥',Rouge:'❤️😈'};
+  document.getElementById('rE').textContent=emojis[short]||'🔥';
+  document.getElementById('rT').textContent=msg;
+  document.getElementById('react').classList.add('show');
+  updateSMS();
+  document.getElementById('react').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function updateSMS(){
+  const msg=encodeURIComponent(`🎯 Mission Sam — Niveau 5\n\n📍 Je confirme le rendez-vous à 19h30 : [ à compléter ]\n\n👑 Ma couleur choisie... là où toi seul as le droit de regarder : ${chosen}\n\nJ'arrive bientôt... 🔥`);
+  document.getElementById('smsBtn').href=`sms:${phone}?body=${msg}`;
+}
+updateSMS();
+</script>
+</body>
+</html>
